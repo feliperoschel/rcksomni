@@ -1,13 +1,11 @@
 {
+  "parser": "babel-eslint",
   "env": {
     "browser": true,
     "es6": true,
     "jest": true
   },
-  "extends": [
-    "plugin:react/recommended",
-    "airbnb"
-  ],
+  "extends": ["eslint:recommended", "plugin:react/recommended", "airbnb"],
   "globals": {
     "Atomics": "readonly",
     "SharedArrayBuffer": "readonly"
@@ -19,9 +17,7 @@
     "ecmaVersion": 2018,
     "sourceType": "module"
   },
-  "plugins": [
-    "react"
-  ],
+  "plugins": ["react", "jsx-a11y", "import", "import-helpers"],
   "rules": {
     "react/jsx-filename-extension": [
       "error",
@@ -35,13 +31,18 @@
     "import-helpers/order-imports": [
       "warn",
       {
-          "newlinesBetween": "always",
-          "groups": [
-            "module",
-            "/^@shared/",
-            ["parent", "sibling", "index"],
-          ],
-          "alphabetize": { "order": "asc", "ignoreCase": true }
+        "newlinesBetween": "always",
+        "groups": [
+          "/^react/",
+          "module",
+          "/^~/",
+          "/^@shared/",
+          ["parent", "sibling", "index"]
+        ],
+        "alphabetize": {
+          "order": "asc",
+          "ignoreCase": true
+        }
       }
     ]
   }

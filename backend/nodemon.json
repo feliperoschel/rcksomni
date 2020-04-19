@@ -1,0 +1,8 @@
+{
+  "events": {
+    "start": "fuser -k 3333/tcp",
+    "restart": "fuser -k 3333/tcp",
+    "crash": "fuser -k 3333/tcp",
+    "stop": "fuser -k 3333/tcp"
+  }
+}

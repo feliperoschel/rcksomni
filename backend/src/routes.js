@@ -1,5 +1,6 @@
 const express = require('express');
 const { celebrate, Segments, Joi } = require('celebrate');
+const { catchErrors } = require('./handlers/errorHandlers');
 
 const OngController = require('./controllers/OngController');
 const IncidentController = require('./controllers/IncidentController');
@@ -8,7 +9,10 @@ const SessionController = require('./controllers/SessionController');
 
 const routes = express.Router();
 
-routes.get('/ongs', OngController.index);
+routes.get(
+  '/ongs',
+  catchErrors(OngController.index),
+);
 
 routes.post(
   '/ongs',
@@ -21,7 +25,7 @@ routes.post(
       uf: Joi.string().required().length(2),
     }),
   }),
-  OngController.create,
+  catchErrors(OngController.create),
 );
 
 routes.get(
@@ -31,10 +35,23 @@ routes.get(
       page: Joi.number(),
     }),
   }),
-  IncidentController.index,
+  catchErrors(IncidentController.index),
 );
 
-routes.post('/incidents', IncidentController.create);
+routes.post(
+  '/incidents',
+  celebrate({
+    [Segments.BODY]: Joi.object().keys({
+      title: Joi.string().required().min(2),
+      description: Joi.string().required().min(6),
+      value: Joi.number().required().min(1),
+    }),
+    [Segments.HEADERS]: Joi.object().keys({
+      authorization: Joi.string().required().min(1),
+    }).unknown(),
+  }),
+  catchErrors(IncidentController.create),
+);
 
 routes.delete(
   '/incidents/:id',
@@ -43,7 +60,7 @@ routes.delete(
       id: Joi.number().required(),
     }),
   }),
-  IncidentController.delete,
+  catchErrors(IncidentController.delete),
 );
 
 routes.get(
@@ -53,9 +70,17 @@ routes.get(
       authorization: Joi.string().required(),
     }).unknown(),
   }),
-  ProfileController.index,
+  catchErrors(ProfileController.index),
 );
 
-routes.post('/sessions', SessionController.create);
+routes.post(
+  '/sessions',
+  celebrate({
+    [Segments.HEADERS]: Joi.object({
+      authorization: Joi.string().required(),
+    }).unknown(),
+  }),
+  catchErrors(SessionController.create),
+);
 
 module.exports = routes;
